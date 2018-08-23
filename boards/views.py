@@ -1,13 +1,16 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Board, Topic, User, Post
+from .models import Board, Topic, Post, Entity
 from django.http import Http404
 from .forms import NewTopicForm, PostForm
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
-from django.views.generic import UpdateView, ListView
+from django.db.models import Count, Q
+from django.views.generic import UpdateView, ListView, CreateView
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic import View
 
 
 # Create your views here.
@@ -29,7 +32,7 @@ class TopicListView(ListView):
 
   def get_queryset(self):
     self.board = get_object_or_404(Board, pk=self.kwargs.get('pk'))
-    queryset = self.board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
+    queryset = self.board.topics.order_by('-last_updated').annotate(comments = Count('posts', filter = Q(posts__post_type = 'post')), stars = Count('posts', filter = Q(posts__post_type = 'star')))
     return queryset
 
 @login_required
@@ -63,12 +66,21 @@ class PostListView(ListView):
         self.topic.views += 1
         self.topic.save()
         kwargs['topic'] = self.topic
+        kwargs['star_len'] = self.topic.posts.filter(post_type = 'star').count()
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):
         self.topic = get_object_or_404(Topic, board__pk=self.kwargs.get('pk'), pk=self.kwargs.get('topic_pk'))
-        queryset = self.topic.posts.order_by('created_at')
+        queryset = self.topic.posts.order_by('created_at').filter(post_type = 'post')
         return queryset
+
+@login_required
+def star_topic(request, pk, topic_pk):
+    topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
+    stars = Post.objects.filter(post_type = 'star', created_by = request.user, topic = topic)
+    if request.method == 'GET' and len(stars) == 0:
+        Post(post_type = 'star', created_by = request.user, topic = topic).save()
+    return redirect('topic_posts', pk=pk, topic_pk=topic_pk)
 
 @login_required
 def reply_topic(request, pk, topic_pk):

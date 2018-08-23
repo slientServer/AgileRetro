@@ -120,3 +120,5 @@ STATICFILES_DIRS = [
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+AUTH_USER_MODEL = 'accounts.User'
+TIME_ZONE='Asia/Shanghai'

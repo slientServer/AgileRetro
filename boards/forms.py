@@ -1,5 +1,6 @@
 from django import forms
 from .models import Topic, Post
+from django.utils import timezone 
 
 class NewTopicForm(forms.ModelForm):
   """docstring for NewTopicForm"""
@@ -15,5 +16,5 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['message', ]
-      
+
     

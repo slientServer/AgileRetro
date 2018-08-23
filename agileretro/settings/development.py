@@ -9,7 +9,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'retro',
+        'NAME': 'agileretro',
         'USER': 'root',
         'PASSWORD': 'toor',
         'HOST': 'localhost',

@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active">Boards</li>
+  <li class="breadcrumb-item active">Home</li>
 {% endblock %}
 
 {% block content %}
   <table class="table">
     <thead class="thead-inverse">
       <tr>
-        <th>Board</th>
-        <th>Posts</th>
+        <th>Retro</th>
         <th>Topics</th>
-        <th>Last Post</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Last Comment</th>
       </tr>
     </thead>
     <tbody>
@@ -22,22 +23,25 @@
             <small class="text-muted d-block">{{ board.description }}</small>
           </td>
           <td class="align-middle">
-            {{ board.get_posts_count }}
+            {{ board.topics.count }}
           </td>
           <td class="align-middle">
-            {{ board.topics.count }}
+            {{ board.start }}
+          </td>
+          <td class="align-middle">
+            {{ board.end }}
           </td>
           <td class="align-middle">
             {% with post=board.get_last_post %}
               {% if post %}
                 <small>
                   <a href="{% url 'topic_posts' board.pk post.topic.pk %}">
-                    By {{ post.created_by.username }} at {{ post.created_at }}
+                    <!-- By {{ post.created_by.username }} at  -->{{ post.created_at }}
                   </a>
                 </small>
               {% else %}
                 <small class="text-muted">
-                  <em>No posts yet.</em>
+                  <em>No comments yet.</em>
                 </small>
               {% endif %}
             {% endwith %}

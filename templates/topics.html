@@ -11,17 +11,17 @@
 {% endblock %}
 
 {% block content %}
-
-  <div class="mb-4">
-    <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary">New topic</a>
-  </div>
+  {% if user.is_authenticated %}
+    <div class="mb-4">
+      <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary">New topic</a>
+    </div>
+  {% endif %}
   <table class="table">
     <thead class="thead-inverse">
       <tr>
         <th>Topic</th>
-        <th>Starter</th>
-        <th>Replies</th>
-        <th>Views</th>
+        <th>Comments</th>
+        <th>Stars</th>
         <th>Last Update</th>
       </tr>
     </thead>
@@ -29,9 +29,8 @@
       {% for topic in topics %}
         <tr>
           <td><a href="{% url 'topic_posts' board.pk topic.pk %}">{{ topic.subject }}</a></td>
-          <td>{{ topic.starter.username }}</td>
-          <td>{{ topic.replies }}</td>
-          <td>{{ topic.views }}</td>  <!-- here -->
+          <td>{{ topic.comments }}</td>
+          <td>{{ topic.stars }}</td>  <!-- here -->
           <td>{{ topic.last_updated | naturaltime }}</td>
         </tr>
       {% endfor %}

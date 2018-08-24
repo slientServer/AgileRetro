@@ -6,23 +6,47 @@
 {% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="{% url 'home' %}">Boards</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
   <li class="breadcrumb-item active">{{ board.name }}</li>
 {% endblock %}
 
 {% block content %}
   {% if user.is_authenticated %}
-    <div class="mb-4">
-      <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary">New topic</a>
+    <div class="row justify-content-end">
+      <div class="col-2" style="text-align: right;">
+        <a href="{% url 'new_topic' board.pk %}" class="btn btn-outline-primary btn-sm">New topic</a>
+      </div>
     </div>
   {% endif %}
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      {% if selected_category == 9999 %}
+        <a class="nav-link active" href="{% url 'board_topics' board.pk 9999 %}">All</a>
+      {% else %}
+        <a class="nav-link" href="{% url 'board_topics' board.pk 9999 %}">All</a>
+      {% endif %}
+    </li>
+    {% for type in categorys %}
+      <li class="nav-item">
+        {% if selected_category == type.id %}
+          <a class="nav-link active" href="{% url 'board_topics' board.pk type.id %}">{{type.name}}</a>
+        {% else %}
+          <a class="nav-link" href="{% url 'board_topics' board.pk type.id %}">{{type.name}}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
   <table class="table">
     <thead class="thead-inverse">
       <tr>
         <th>Topic</th>
         <th>Comments</th>
         <th>Stars</th>
-        <th>Last Update</th>
+        <th>Type</th>
+        {% if user.is_authenticated %}
+          <th>Actions</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
@@ -31,7 +55,18 @@
           <td><a href="{% url 'topic_posts' board.pk topic.pk %}">{{ topic.subject }}</a></td>
           <td>{{ topic.comments }}</td>
           <td>{{ topic.stars }}</td>  <!-- here -->
-          <td>{{ topic.last_updated | naturaltime }}</td>
+          <td>{{ topic.category }}</td>  <!-- here -->
+          <!-- <td>{{ topic.last_updated | naturaltime }}</td> -->
+          {% if user.is_authenticated %}
+            <td>
+              <a href="{% url 'reply_topic' topic.board.pk topic.pk %}" class="btn btn-outline-info btn-sm" role="button">Reply</a>
+              {% if topic.star_len == 0 %}
+                <a href="{% url 'star_topic' topic.board.pk topic.pk selected_category%}" class="btn btn-outline-success btn-sm" role="button">Like</a>
+              {% else %}
+                <button class="btn btn-secondary btn-sm" role="button" disabled>Liked</button>
+              {% endif %}            
+            </td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>

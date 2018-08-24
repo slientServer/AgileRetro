@@ -6,22 +6,24 @@
 {% block title %}{{ topic.subject }}{% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="{% url 'home' %}">Boards</a></li>
-  <li class="breadcrumb-item"><a href="{% url 'board_topics' topic.board.pk %}">{{ topic.board.name }}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'board_topics' topic.board.pk 9999 %}">{{ topic.board.name }}</a></li>
   <li class="breadcrumb-item active">{{ topic.subject }}</li>
 {% endblock %}
 
 {% block content %}
 
-  <div class="mb-4">
-    <a href="{% url 'reply_topic' topic.board.pk topic.pk %}" class="btn btn-primary" role="button">Reply</a>
-    {% if star_len == 0 %}
-      <a href="{% url 'star_topic' topic.board.pk topic.pk %}" class="btn btn-primary" role="button">Like</a>
-    {% endif %}
-    {% if star_len > 0 %}
-      <button class="btn btn-secondary" role="button" disabled>Liked</button>
-    {% endif %}
+<!--   <div class="mb-4">
+
+  </div> -->
+
+{% if posts|length == 0 %}
+  <div class="row justify-content-center">
+    <div class="col-6" style="text-align: center;">
+      <a>Still waiting for your commnets...</a>
+    </div>
   </div>
+{% endif %}
 
 {% for post in posts %}
   <div class="card mb-2 {% if forloop.first %}border-dark{% endif %}">

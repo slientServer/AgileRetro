@@ -1,16 +1,20 @@
 from django import forms
-from .models import Topic, Post
+from .models import Topic, Post, Category
 from django.utils import timezone 
+from accounts.models import User
 
 class NewTopicForm(forms.ModelForm):
   """docstring for NewTopicForm"""
-  message=forms.CharField(widget=forms.Textarea(
-    attrs={'rows': 5, 'placeholder': 'What is on your mind?'}
-  ), max_length=4000, help_text='The max length of the text is 4000.')
+  def __init__(self, *args, **kwargs):
+    user = kwargs.pop('user', None)
+    super(NewTopicForm, self).__init__(*args, **kwargs)
+    self.fields['category'] = forms.ModelChoiceField(empty_label='Please select type...', queryset=Category.objects.all().filter(entity=(User.objects.all().filter(username=user))[0].entity))
+
+  category = forms.ModelChoiceField(queryset=Category.objects.all())
 
   class Meta:
     model=Topic
-    fields=['subject', 'message']
+    fields=[ 'category', 'subject']
 
 class PostForm(forms.ModelForm):
     class Meta:

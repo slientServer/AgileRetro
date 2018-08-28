@@ -1,4 +1,4 @@
-from django.contrib import admin
+from accounts.admin import admin
 from .models import Entity, Board, Topic, Post, Category
 # Register your models here.
 

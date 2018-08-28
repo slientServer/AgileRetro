@@ -55,7 +55,7 @@ class Topic(models.Model):
   status = models.CharField(max_length=8, choices= (('draft', 'Draft'), ('active', 'Active'), ('inactive', 'Inactive'), ('deleted', 'Deleted'),), default = 'active')
 
   def __str__(self):
-    return self.name
+    return self.subject
 
 class Post(models.Model):
   """docstring for Post"""

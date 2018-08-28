@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from .models import Board, Topic, Post, Entity, Category
 from accounts.models import User
 from django.http import Http404
 from .forms import NewTopicForm, PostForm
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from django.views.generic import UpdateView, ListView, CreateView
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import View
-
 
 # Create your views here.
 
@@ -43,10 +42,13 @@ class TopicListView(ListView):
       if self.request.user.is_authenticated:
         queryset = self.board.topics.annotate(comments = Count('posts', filter = Q(posts__post_type = 'post')), 
               stars = Count('posts', filter = Q(posts__post_type = 'star')), total = Count('posts'), star_len = Count('posts', filter = Q(posts__post_type = 'star', posts__created_by = self.request.user))).order_by('-total')
+      else:
+        queryset = self.board.topics.annotate(comments = Count('posts', filter = Q(posts__post_type = 'post')), 
+          stars = Count('posts', filter = Q(posts__post_type = 'star')), star_len = Count('posts', filter = Q(posts__post_type = 'star'))).order_by('-last_updated')
+
     except 'BaseException':
       queryset = self.board.topics.annotate(comments = Count('posts', filter = Q(posts__post_type = 'post')), 
             stars = Count('posts', filter = Q(posts__post_type = 'star')), star_len = Count('posts', filter = Q(posts__post_type = 'star'))).order_by('-last_updated')
-
     if self.kwargs.get('category') != '9999':
       queryset = queryset.filter(category=self.kwargs.get('category'))
     return queryset
@@ -132,3 +134,4 @@ class PostUpdateView(UpdateView):
         post.updated_at = timezone.now()
         post.save()
         return redirect('topic_posts', pk=post.topic.board.pk, topic_pk=post.topic.pk)
+

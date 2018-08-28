@@ -30,7 +30,7 @@ DEBUG = False
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'accounts.apps.MyAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'widget_tweaks',
-    
+    'rest_framework',
+
     'boards',
     'accounts',
 ]
@@ -122,3 +123,11 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 AUTH_USER_MODEL = 'accounts.User'
 TIME_ZONE='Asia/Shanghai'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ]
+}

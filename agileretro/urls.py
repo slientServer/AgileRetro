@@ -15,12 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url
+from django.urls import include
 
 from boards import views
 from accounts import views as accounts_views
 from django.contrib.auth import views as auth_views
 
+# Restful API
+from rest_framework import routers
+router = routers.DefaultRouter()
+# router.register(r'users', accounts_views.UserViewSet, base_name='user')
+# router.register(r'groups', accounts_views.GroupViewSet)
+# router.register(r'boards', views.BoardView.as_view())
+
 urlpatterns = [
+
     url(r'^$', views.BoardListView.as_view(), name='home'),
     url(r'^signup$', accounts_views.signup, name='signup'),
     url(r'^login/$', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
@@ -57,4 +66,9 @@ urlpatterns = [
     url(r'^boards/(?P<pk>\d+)/new', views.new_topic, name='new_topic'),
 
     url(r'admin/', admin.site.urls),
+
+
+    # Restful API
+    url(r'^api/userstatistic/', accounts_views.UsersStatisticView.as_view()),
+    url(r'^api-auth/', include('rest_framework.urls')),
 ]

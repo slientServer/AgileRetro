@@ -46,7 +46,7 @@ class UsersStatisticView(APIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    # permission_classes = (permissions.IsAdminUser,)
+    permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request):
       board = get_object_or_404(Board, id=request.query_params.get('pk', None))

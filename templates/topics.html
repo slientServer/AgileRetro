@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-  {% if user.is_authenticated %}
+  {% if user.is_authenticated and time_valid %}
     <div class="row justify-content-end">
       <div class="col-2" style="text-align: right;">
         <a href="{% url 'new_topic' board.pk %}" class="btn btn-outline-primary btn-sm">New topic</a>
@@ -44,7 +44,7 @@
         <th>Comments</th>
         <th>Stars</th>
         <th>Type</th>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and time_valid %}
           <th>Actions</th>
         {% endif %}
       </tr>
@@ -57,7 +57,7 @@
           <td>{{ topic.stars }}</td>  <!-- here -->
           <td>{{ topic.category }}</td>  <!-- here -->
           <!-- <td>{{ topic.last_updated | naturaltime }}</td> -->
-          {% if user.is_authenticated %}
+          {% if user.is_authenticated and time_valid %}
             <td>
               <a href="{% url 'reply_topic' topic.board.pk topic.pk %}" class="btn btn-outline-info btn-sm" role="button">Reply</a>
               {% if topic.star_len == 0 %}

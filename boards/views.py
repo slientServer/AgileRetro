@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import View
+from django.utils import timezone
 
 # Create your views here.
 
@@ -34,6 +35,9 @@ class TopicListView(ListView):
     except 'BaseException':
         kwargs['categorys'] = []
     kwargs['selected_category'] = int(self.kwargs.get('category'), 10)
+    kwargs['time_valid'] =  False
+    if (timezone.now() > self.board.start and timezone.now() < self.board.end):
+      kwargs['time_valid'] =  True
     return super().get_context_data(**kwargs)
 
   def get_queryset(self):
@@ -59,7 +63,7 @@ def new_topic(request, pk):
   user = request.user
   if request.method=='POST':
     form=NewTopicForm(request.POST, user=user)
-    if form.is_valid():
+    if form.is_valid() and timezone.now() > board.start and timezone.now() < board.end:
       topic=form.save(commit=False)
       topic.board=board
       topic.starter=user
@@ -95,7 +99,7 @@ class PostListView(ListView):
 def star_topic(request, pk, topic_pk, category):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
     stars = Post.objects.filter(post_type = 'star', created_by = request.user, topic = topic)
-    if request.method == 'GET' and len(stars) == 0:
+    if request.method == 'GET' and len(stars) == 0 and timezone.now() > topic.board.start and timezone.now() < topic.board.end:
         Post(post_type = 'star', created_by = request.user, topic = topic).save()
     return redirect('board_topics', pk=pk, category=category)
 
@@ -104,7 +108,7 @@ def reply_topic(request, pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
     if request.method == 'POST':
         form = PostForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and timezone.now() > topic.board.start and timezone.now() < topic.board.end:
             post = form.save(commit=False)
             post.topic = topic
             post.created_by = request.user

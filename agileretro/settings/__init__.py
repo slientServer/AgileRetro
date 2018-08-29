@@ -1,9 +1,10 @@
 # -*- coding: UTF-8 -*-
 import os
+from decouple import config
 
-if os.environ['PYTHON_ENV'] == 'production':
+if config('PYTHON_ENV') == 'production':
   from .production import *
-elif os.environ['PYTHON_ENV'] == 'staging':
+elif config('PYTHON_ENV') == 'staging':
   from .development import *
 else:
   from .development import *

@@ -3,7 +3,6 @@ from .models import User
 
 # Register your models here.
 
-class MyAdminSite(admin.AdminSite):
-    site_header = 'Agile-Retro Administration'
-
-admin.register(User)
+admin.site.site_header = 'Agile Retro Administration'
+admin.site.site_title = 'Agile Retro'
+admin.site.register(User)

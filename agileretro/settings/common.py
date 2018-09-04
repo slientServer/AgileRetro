@@ -30,7 +30,7 @@ DEBUG = False
 # Application definition
 
 INSTALLED_APPS = [
-    'accounts.apps.MyAdminConfig',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

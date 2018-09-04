@@ -63,7 +63,7 @@
               {% if topic.star_len == 0 %}
                 <a href="{% url 'star_topic' topic.board.pk topic.pk selected_category%}" class="btn btn-outline-success btn-sm" role="button">Like</a>
               {% else %}
-                <button class="btn btn-secondary btn-sm" role="button" disabled>Liked</button>
+                <a href="{% url 'unstar_topic' topic.board.pk topic.pk selected_category%}" class="btn btn-outline-warning btn-sm" role="button">Unlike</a>
               {% endif %}            
             </td>
           {% endif %}

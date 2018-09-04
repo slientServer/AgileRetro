@@ -62,6 +62,7 @@ urlpatterns = [
     url(r'^boards/(?P<pk>\d+)/topics/(?P<topic_pk>\d+)/$', views.PostListView.as_view(), name='topic_posts'),
     url(r'^boards/(?P<pk>\d+)/topics/(?P<topic_pk>\d+)/reply/$', views.reply_topic, name='reply_topic'),
     url(r'^boards/(?P<pk>\d+)/topics/(?P<topic_pk>\d+)/star/(?P<category>\d+)$', views.star_topic, name='star_topic'),
+    url(r'^boards/(?P<pk>\d+)/topics/(?P<topic_pk>\d+)/unstar/(?P<category>\d+)$', views.unstar_topic, name='unstar_topic'),
     url(r'^boards/(?P<pk>\d+)/category/(?P<category>\d+)$', views.TopicListView.as_view(), name='board_topics'),
     url(r'^boards/(?P<pk>\d+)/new', views.new_topic, name='new_topic'),
 

@@ -104,6 +104,13 @@ def star_topic(request, pk, topic_pk, category):
     return redirect('board_topics', pk=pk, category=category)
 
 @login_required
+def unstar_topic(request, pk, topic_pk, category):
+    topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
+    if request.method == 'GET' and timezone.now() > topic.board.start and timezone.now() < topic.board.end:
+        Post.objects.filter(post_type = 'star', created_by = request.user, topic = topic).delete()
+    return redirect('board_topics', pk=pk, category=category) 
+
+@login_required
 def reply_topic(request, pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
     if request.method == 'POST':
